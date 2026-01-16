@@ -6,6 +6,7 @@ import SonarSearch from './SonarSearch';
 import OceanParticles from './OceanParticles';
 import DepthMinimap from './DepthMinimap';
 import DataPad from './DataPad';
+import ScrambleText from './ScrambleText';
 
 function getNodeClass(size) {
   if (size === "large") return "node-large";
@@ -99,7 +100,7 @@ export default function Main() {
 
       <section className="hero-section">
         <div className="title-container">
-          <h1>Cybersecurity Deep Trench</h1>
+          <h1><ScrambleText text="Cybersecurity Deep Trench" /></h1>
           <h2>
             by{' '}
             <span>
@@ -153,7 +154,9 @@ export default function Main() {
                     <div className="node-glow"></div>
                   </div>
 
-                  <span className="concept-name-label">{concept.name}</span>
+                  <span className="concept-name-label">
+                    <ScrambleText text={concept.name} active={discoveredSet.current.has(concept.id)} />
+                  </span>
 
                   <div className="concept-info">
                     <h3 title={`${concept.name}`} aria-label={`${concept.name}`} >{concept.name}</h3>

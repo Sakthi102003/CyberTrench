@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import ScrambleText from './ScrambleText';
 
 export default function DataPad({ concept, onClose }) {
     const [isVisible, setIsVisible] = useState(false);
@@ -30,7 +31,9 @@ export default function DataPad({ concept, onClose }) {
                 <div className="datapad-content">
                     <div className="datapad-scan-line"></div>
 
-                    <h2 className="datapad-title">{concept.name}</h2>
+                    <h2 className="datapad-title">
+                        <ScrambleText text={concept.name} active={isVisible} />
+                    </h2>
 
                     <div className="datapad-meta">
                         <span className="datapad-chip depth-chip">DEPTH: {concept.depth}m</span>
