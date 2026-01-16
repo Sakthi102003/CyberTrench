@@ -4,6 +4,8 @@ import { mlConcepts, depthMarkers, zones } from "../data/securityconcepts.js";
 import AmbientAudio from './AmbientAudio';
 import SonarSearch from './SonarSearch';
 import OceanParticles from './OceanParticles';
+import DepthMinimap from './DepthMinimap';
+import DataPad from './DataPad';
 
 function getNodeClass(size) {
   if (size === "large") return "node-large";
@@ -14,6 +16,7 @@ function getNodeClass(size) {
 export default function Main() {
   const [currentDepth, setCurrentDepth] = useState(0);
   const [discoveredCount, setDiscoveredCount] = useState(0);
+  const [selectedConcept, setSelectedConcept] = useState(null);
   const oceanRef = useRef(null);
   const discoveredSet = useRef(new Set());
 
@@ -80,9 +83,11 @@ export default function Main() {
   return (
     <main>
       <OceanParticles depth={currentDepth} />
+      <DataPad concept={selectedConcept} onClose={() => setSelectedConcept(null)} />
       <div className="fixed-ui">
         <AmbientAudio depth={currentDepth} />
         <SonarSearch concepts={mlConcepts} onNavigate={handleSonarNavigation} />
+        <DepthMinimap zones={zones} currentDepth={currentDepth} onNavigate={handleSonarNavigation} />
         <div className="depth-indicator">
           <span className="depth-value">{currentDepth}</span>
           <span className="depth-unit">m</span>
@@ -141,6 +146,7 @@ export default function Main() {
                   data-id={concept.id}
                   data-name={concept.name}
                   data-depth={String(concept.depth)}
+                  onClick={() => setSelectedConcept(concept)}
                 >
                   <div className="concept-node">
                     <div className="node-core"></div>
@@ -154,9 +160,9 @@ export default function Main() {
                     <p>{concept.description}</p>
                     <div className="meta-row">
                       <span className="concept-category">{concept.category}</span>
-                      <a href={concept.link} target="_blank" aria-label={`$`} rel="noopener noreferrer" className="paper-link" title={`${concept.name}`}>
-                        Read Paper ↗
-                      </a>
+                      <span className="paper-link" style={{ cursor: 'pointer' }}>
+                        Details ↗
+                      </span>
                     </div>
                   </div>
                 </div>
