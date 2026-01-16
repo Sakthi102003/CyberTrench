@@ -2,6 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import "../styles/_ocean.css";
 import { mlConcepts, depthMarkers, zones } from "../data/securityconcepts.js";
 import AmbientAudio from './AmbientAudio';
+import SonarSearch from './SonarSearch';
+import OceanParticles from './OceanParticles';
 
 function getNodeClass(size) {
   if (size === "large") return "node-large";
@@ -15,6 +17,13 @@ export default function Main() {
   const oceanRef = useRef(null);
   const discoveredSet = useRef(new Set());
 
+  const handleSonarNavigation = (depth) => {
+    window.scrollTo({
+      top: depth,
+      behavior: 'smooth'
+    });
+  };
+
   useEffect(() => {
     const concepts = document.querySelectorAll(".ml-concept");
 
@@ -23,7 +32,7 @@ export default function Main() {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add("visible");
-            
+
             // Track discovery
             const id = entry.target.dataset.id;
             if (id && !discoveredSet.current.has(id)) {
@@ -63,18 +72,20 @@ export default function Main() {
     window.addEventListener('scroll', handleScroll);
 
     return () => {
-        concepts.forEach((concept) => conceptObserver.unobserve(concept));
-        window.removeEventListener('scroll', handleScroll);
+      concepts.forEach((concept) => conceptObserver.unobserve(concept));
+      window.removeEventListener('scroll', handleScroll);
     }
   }, []);
 
   return (
     <main>
+      <OceanParticles depth={currentDepth} />
       <div className="fixed-ui">
         <AmbientAudio depth={currentDepth} />
+        <SonarSearch concepts={mlConcepts} onNavigate={handleSonarNavigation} />
         <div className="depth-indicator">
-            <span className="depth-value">{currentDepth}</span>
-            <span className="depth-unit">m</span>
+          <span className="depth-value">{currentDepth}</span>
+          <span className="depth-unit">m</span>
         </div>
         <div className="discovery-tracker">
           Discovered: {discoveredCount} / {mlConcepts.length}
@@ -135,7 +146,7 @@ export default function Main() {
                     <div className="node-core"></div>
                     <div className="node-glow"></div>
                   </div>
-                  
+
                   <span className="concept-name-label">{concept.name}</span>
 
                   <div className="concept-info">
